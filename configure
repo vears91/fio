@@ -1334,6 +1334,26 @@ echo "rbd_invalidate_cache          $rbd_inval"
 fi
 
 ##########################################
+# check for blkin
+blkin="no"
+cat > $TMPC << EOF
+#include <zipkin_c.h>
+
+int main(int argc, char **argv)
+{
+  struct blkin_endpoint endp;
+  struct blkin_trace trace;
+  blkin_init_endpoint(&endp, "0.0.0.0", 0, "find zipkin");
+  return 0;
+}
+EOF
+if compile_prog "" "-lblkin" "blkin"; then
+  LIBS="-lblkin $LIBS"
+  blkin="yes"
+fi
+echo "blkin                         $blkin"
+
+##########################################
 # Check whether we have setvbuf
 setvbuf="no"
 cat > $TMPC << EOF
